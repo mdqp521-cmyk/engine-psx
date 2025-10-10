@@ -17,26 +17,13 @@
 #include "screens/sprite_test.h"
 
 /* // FULL LEVEL SELECT */
-/* #define CHOICE_SOUNDTEST  20 */
-/* #define CHOICE_SLIDE      21 */
-/* #define CHOICE_CHARACTER  22 */
-/* #define CHOICE_OPTIONS    23 */
-/* #define CHOICE_SPRITETEST 24 */
-/* #define CHOICE_MODELTEST  25 */
-/* #define CHOICE_TITLE      26 */
-/* #define CHOICE_CREDITS    27 */
-/* #define MAX_COLUMN_CHOICES 17 */
-
-// Demo level select (SAGE 2025 build)
-#define CHOICE_SOUNDTEST  12
-#define CHOICE_SLIDE      13
-#define CHOICE_CHARACTER  14
-#define CHOICE_OPTIONS    15
-#define CHOICE_SPRITETEST 16
-#define CHOICE_MODELTEST  17
-#define CHOICE_TITLE      18
-#define CHOICE_CREDITS    19
-#define MAX_COLUMN_CHOICES 16
+#define CHOICE_SOUNDTEST  20
+#define CHOICE_SLIDE      21
+#define CHOICE_CHARACTER  22
+#define CHOICE_SPRITETEST 23
+#define CHOICE_MODELTEST  24
+#define CHOICE_CREDITS    25
+#define MAX_COLUMN_CHOICES 17
 
 #define MAX_LEVELS   (CHOICE_CREDITS + 1)
 
@@ -60,42 +47,6 @@ typedef struct {
 } screen_levelselect_data;
 
 
-/* static const char *menutext[] = { */
-/*     "TEST LEVEL    1", */
-/*     "              2", */
-/*     "              3A", */
-/*     "              3B", */
-/*     "GREEN HILL    1", */
-/*     "              2", */
-/*     "SURELY WOOD   1", */
-/*     "              2", */
-/*     "DAWN CANYON   1", */
-/*     "              2", */
-/*     "AMAZING OCEAN 1", */
-/*     "              2", */
-/*     "R6            1", */
-/*     "              2", */
-/*     "R7            1", */
-/*     "              2", */
-/*     "EGGMANLAND    1", */
-/*     "              2", */
-/*     "              3", */
-/*     "WINDMILL ISLE 1", */
-/*     "\n", */
-/*     "BGM TEST    *xx*", */
-/*     "SPLASH      *xx*", */
-/*     "PLAYER  xxxxxxxx", */
-/*     "\n", */
-/*     "\n", */
-/*     "\n", */
-/*     "OPTIONS", */
-/*     "SPRITE TEST", */
-/*     "MODEL TEST", */
-/*     "TITLE SCREEN", */
-/*     "CREDITS", */
-/*     NULL, */
-/* }; */
-
 static const char *menutext[] = {
     "TEST LEVEL    1",
     "              2",
@@ -109,17 +60,19 @@ static const char *menutext[] = {
     "              2",
     "AMAZING OCEAN 1",
     "              2",
-    "\n",
+    "R6            1",
+    "              2",
+    "R7            1",
+    "              2",
+    "EGGMANLAND    1",
+    "              2",
+    "              3",
+    "WINDMILL ISLE 1",
     "BGM TEST    *xx*",
     "SPLASH      *xx*",
     "PLAYER  xxxxxxxx",
-    "\n",
-    "\n",
-    "\n",
-    "OPTIONS",
-    "SPRITE TEST",
-    "MODEL TEST",
-    "TITLE SCREEN",
+    "SPRITE",
+    "MODEL",
     "CREDITS",
     NULL,
 };
@@ -268,10 +221,7 @@ screen_levelselect_update(void *d)
     data->menu_choice = (data->menu_choice % MAX_LEVELS);
         
     if(pad_pressed(PAD_START) || pad_pressed(PAD_CROSS)) {
-        if(data->menu_choice == CHOICE_TITLE) {
-            scene_change(SCREEN_TITLE);
-            return;
-        } else if(data->menu_choice == CHOICE_MODELTEST) {
+        if(data->menu_choice == CHOICE_MODELTEST) {
             scene_change(SCREEN_MODELTEST);
         } else if(data->menu_choice == CHOICE_SLIDE) {
             if(data->slidetest_selection > 0) {
@@ -288,9 +238,6 @@ screen_levelselect_update(void *d)
                 sound_bgm_play(data->soundtest_selection - 1);
                 data->music_selected = data->soundtest_selection - 1;
             }
-        } else if(data->menu_choice == CHOICE_OPTIONS) {
-            scene_change(SCREEN_OPTIONS);
-            return;
         } else if(data->menu_choice == CHOICE_SPRITETEST) {
             screen_level_setcharacter(data->character_selection);
             screen_sprite_test_setcharacter(data->character_selection);
@@ -302,16 +249,13 @@ screen_levelselect_update(void *d)
             // Select a level
 
             // Check for blacklisted levels.
-            // (Important for SAGE 2025 demo)
-#ifndef ALLOW_DEBUG
-            if((data->menu_choice == 7) // SWZ2
-               || (data->menu_choice == 8) // DCZ1
-               || (data->menu_choice == 9) // DCZ2
-               || (data->menu_choice == 11) // AOZ2
-            ) {
-                return;
-            }
-#endif
+/* #ifndef ALLOW_DEBUG */
+/*             if((data->menu_choice == 7) // SWZ2 */
+/*                || (data->menu_choice == 11) // AOZ2 */
+/*             ) { */
+/*                 return; */
+/*             } */
+/* #endif */
 
             // When selecting Test Level A or B, check character
             if(data->menu_choice == 2 && data->character_selection == CHARA_KNUCKLES) {
