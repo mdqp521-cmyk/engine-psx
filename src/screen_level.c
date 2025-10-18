@@ -1533,10 +1533,8 @@ screen_level_play_music(uint8_t round, uint8_t act)
     switch(round) {
     case 0:
         switch(act) {
-        case 0: sound_bgm_play(BGM_PLAYGROUND1); break;
-        case 1: sound_bgm_play(BGM_PLAYGROUND2); break;
-        case 2: sound_bgm_play(BGM_PLAYGROUND3); break;
-        case 3: sound_bgm_play(BGM_PLAYGROUND4); break;
+        default: sound_bgm_play(BGM_TESTLEVEL0); break;
+        case 3:  sound_bgm_play(BGM_TESTLEVEL1); break;
         };
         break;
     case 2: sound_bgm_play(BGM_GREENHILL);       break;
@@ -1545,8 +1543,6 @@ screen_level_play_music(uint8_t round, uint8_t act)
     case 5: sound_bgm_play(BGM_AMAZINGOCEAN);    break;
     case 6: break; // TODO
     case 7: break; // TODO
-    /* case 8: sound_bgm_play(BGM_EGGMANLAND);      break; */
-    /* case 9: sound_bgm_play(BGM_WINDMILLISLE);    break; */
     default: break;
     }
 }

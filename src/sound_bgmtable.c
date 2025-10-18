@@ -2,39 +2,19 @@
 
 // References whether each BGM loops.
 // See BGMOption definition for order of BGMs.
-/* static uint8_t _bgm_loops[] = { */
-/*     0, */
-/*     1, */
-/*     0, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     1, */
-/*     0, */
-/*     0, */
-/*     1, */
-/* }; */
 
 static uint8_t _bgm_loops[] = {
-    0,
-    1,
-    0,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    1,
+    0, // TITLESCREEN
+    1, // SPEEDSHOES
+    0, // LEVELSELECT
+    1, // TESTLEVEL0
+    1, // TESTLEVEL1
+    1, // GREENHILL
+    1, // SURELYWOOD
+    1, // AMAZINGOCEAN
+    0, // LEVELCLEAR
+    0, // CREDITS
+    1, // BOSS
 };
 
 void

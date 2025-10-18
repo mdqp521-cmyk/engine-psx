@@ -91,23 +91,13 @@ static const char *creditstxt[] = {
     "Amen Break Remixed Loop 01 160 BPM",
     "By u_ul6ysm8501",
     "\r",
-    
-    "Test Level Zone 1",
-    "Rusty Ruin Act 1",
-    "By Richard Jacques",
-    "\r",
 
-    "Test Level Zone 2",
-    "Rusty Ruin Act 2",
-    "By Richard Jacques",
-    "\r",
-
-    "Test Level Zone 3",
+    "Test Level Zone",
     "Let Mom Sleep",
     "By Hideki Naganuma",
     "\r",
 
-    "Test Level Zone 4",
+    "Test Level Zone 3K",
     "Let Mom Sleep: No Sleep Remix",
     "By Hideki Naganuma",
     "Remixed by Richard Jacques",
@@ -123,21 +113,10 @@ static const char *creditstxt[] = {
     "By pkVortex",
     "\r",
 
-    /* "Dawn Canyon Zone", */
-    /* "Chaos Island Act 2", */
-    /* "From Sonic x Shadow Generations", */
-    /* "By Sonic Team", */
-    /* "\r", */
-
     "Amazing Ocean Zone",
     "Aquarium Park -Dragon Dance Mashup-",
     "By DarkHyperSonic7",
     "\r",
-
-    /* "Eggmanland Zone", */
-    /* "Eggmanland: 16 Bit Remix", */
-    /* "By DRocca", */
-    /* "\r", */
 
     "Level Select Theme",
     "Sonic 3D Blast Main Title:",
@@ -150,11 +129,6 @@ static const char *creditstxt[] = {
     "Youre My Hero Remix",
     "By Richard Jacques",
     "\r",
-
-    /* "Windmill Isle", */
-    /* "Windmill Isle Day: Silent Dreams Remix", */
-    /* "By Silent Dreams", */
-    /* "\r", */
 
     "Boss Music",
     "Sonic 3D Blast Boss Music",
