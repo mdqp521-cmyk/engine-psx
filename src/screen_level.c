@@ -1267,7 +1267,7 @@ level_load_level(screen_level_data *data)
         level_act = level - 14;
         break;
     case 16: case 17: case 18:
-        data->level_name = "EGGMANLAND";
+        data->level_name = "EGGMAN LAND";
         level_round = 8;
         level_act = level - 16;
         break;

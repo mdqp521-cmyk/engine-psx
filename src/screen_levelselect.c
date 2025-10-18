@@ -64,7 +64,7 @@ static const char *menutext[] = {
     "              2",
     "R7            1",
     "              2",
-    "EGGMANLAND    1",
+    "EGGMAN LAND   1",
     "              2",
     "              3",
     "WINDMILL ISLE 1",
