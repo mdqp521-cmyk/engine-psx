@@ -8,79 +8,123 @@
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
-// Estructuras de doble buffer para evitar el parpadeo en la pantalla
-DISPENV disp[2];
-DRAWENV draw[2];
+// Estructuras para el Doble Buffer de la PS1 (Evita parpadeos)
+DISPENV disp;
+DRAWENV draw;
 int db = 0;
 
-// Variables para el control y las coordenadas de Leon (Movimiento de Tanque)
+// Variables de movimiento de Leon (Estilo Tanque RE4)
 u_long pad_state;
 int leon_x = 0;
-int leon_z = 0;
-int leon_angulo = 0; // Controla la rotacion de la camara al hombro
+int leon_z = 1000;    // Distancia inicial de la camara
+int leon_angulo = 0;  // Rotacion de la camara al hombro
+
+// Variables nativas del procesador geometrico 3D de la Play 1
+SVECTOR cam_rot = { 0, 0, 0 };
+VECTOR  cam_pos = { 0, 0, 0 };
+MATRIX  matriz_vista;
 
 void init_game_system() {
-    // Reseteamos la tarjeta grafica de la PS1
     ResetGraph(0);
     
-    // Configuramos los dos entornos de dibujo y muestra en la VRAM
-    SetDefDispEnv(&disp[0], 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    SetDefDrawEnv(&draw[0], 0, 240, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Inicializamos el doble buffer en la memoria de video (VRAM)
+    SetDefDispEnv(&disp, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SetDefDrawEnv(&draw, 0, 240, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SetDefDispEnv(&disp, 0, 240, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SetDefDrawEnv(&draw, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     
-    SetDefDispEnv(&disp[1], 0, 240, SCREEN_WIDTH, SCREEN_HEIGHT);
-    SetDefDrawEnv(&draw[1], 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Fondo negro puro (Estilo Survival Horror)
+    setRGB0(&draw, 0, 0, 0);
+    setRGB0(&draw, 0, 0, 0);
     
-    // Color de fondo negro puro para ambiente de Survival Horror
-    setRGB0(&draw[0], 0, 0, 0);
-    setRGB0(&draw[1], 0, 0, 0);
-    
-    // Aplicamos la primera configuracion a la pantalla
     PutDispEnv(&disp[db]);
     PutDrawEnv(&draw[db]);
-    
-    // Activamos la salida de video hacia el emulador/consola
     SetDispMask(1);
     
-    // Inicializamos los puertos de los joysticks
+    // Encendemos el chip de calculo 3D (GTE) y los controles
+    InitGeom();
     PadInit(0);
+    
+    // Seteamos la perspectiva del lente de la camara
+    SetGeomOffset(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+    SetGeomScreen(512); 
 }
 
 void procesar_input() {
-    // Leemos los botones presionados en el Puerto 1
+    // Leemos el Joystick en el Puerto 1
     pad_state = PadRead(0);
     
-    // Control de tanque identico a Resident Evil 4 Mobile
+    // Configuracion de botones de RE4 Mobile
     if (pad_state & PADLup) {
-        leon_z += 4; // Camina hacia adelante en el escenario 3D
+        leon_z -= 20; // Camina hacia adelante en profundidad
     }
     if (pad_state & PADLdown) {
-        leon_z -= 4; // Camina hacia atras
+        leon_z += 20; // Camina hacia atras
     }
     if (pad_state & PADLleft) {
-        leon_angulo -= 16; // Gira sobre su propio eje a la izquierda
+        leon_angulo -= 32; // Gira sobre su eje a la izquierda
     }
     if (pad_state & PADLright) {
-        leon_angulo += 16; // Gira sobre su propio eje a la derecha
+        leon_angulo += 32; // Gira sobre su eje a la derecha
     }
 }
 
+void actualizar_camara_3d() {
+    // Vinculamos tus variables de tanque con las matrices de la PS1
+    cam_rot.vy = leon_angulo;
+    cam_pos.vx = leon_x;
+    cam_pos.vz = leon_z;
+    cam_pos.vy = -100; // Altura fija al hombro de Leon
+    
+    RotMatrix(&cam_rot, &matriz_vista);
+    TransMatrix(&matriz_vista, &cam_pos);
+    SetTransMatrix(&matriz_vista);
+}
+
+void dibujar_piso_pueblo() {
+    POLY_F4 piso;
+    long p, flag;
+    
+    // Coordenadas de los 4 extremos del suelo en el mapa 3D
+    SVECTOR v0 = { -500, 0, -500 };
+    SVECTOR v1 = {  500, 0, -500 };
+    SVECTOR v2 = { -500, 0,  500 };
+    SVECTOR v3 = {  500, 0,  500 };
+    
+    SetPolyF4(&piso);
+    setRGB0(&piso, 128, 128, 128); // Color gris para el suelo
+    
+    // El chip GTE procesa la perspectiva 3D
+    RotTransPers(&v0, (long*)&piso.x0, &p, &flag);
+    RotTransPers(&v1, (long*)&piso.x1, &p, &flag);
+    RotTransPers(&v2, (long*)&piso.x2, &p, &flag);
+    RotTransPers(&v3, (long*)&piso.x3, &p, &flag);
+    
+    // Mandamos el poligono directo a dibujar en la pantalla
+    DrawPrim(&piso);
+}
+
 int main() {
-    // Encendemos el hardware de la PS1
     init_game_system();
     
-    // Bucle principal (Game Loop)
+    // Bucle principal del juego (Game Loop)
     while (1) {
         procesar_input();
+        actualizar_camara_3d();
         
-        // Esperamos la sincronizacion vertical de la tele (V-Sync)
+        PutDrawEnv(&draw[db]);
+        
+        // Renderizamos nuestro piso tridimensional
+        dibujar_piso_pueblo();
+        
         DrawSync(0);
         VSync(0);
         
-        // Intercambiamos los buffers de renderizado (Doble Buffer)
+        // Intercambio de buffers para evitar parpadeos
         db = !db;
         PutDispEnv(&disp[db]);
-        PutDrawEnv(&draw[db]);
     }
-    
     return 0;
 }
+     
+        
